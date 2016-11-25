@@ -65,15 +65,31 @@ int main(int argc, char* argv[])
 		cvImage.data = (uchar*)pImage;
 		cvtColor(cvImage, cvImage, CV_RGB2BGR);
 
-		vector<Mat> pattTransforms;
+		vector< pair<int, Mat> > pattTransforms;
+
 		cout << "Detected markers:" << endl;
 		for (int markerIndex = 0; markerIndex < g_pARHandle->marker_num; markerIndex++) {
 			ARMarkerInfo* pMarker = &(g_pARHandle->markerInfo[markerIndex]);
 			Point2d centre = Point2d(pMarker->pos[0], pMarker->pos[1]);
-			cout << "id " << pMarker->id << " - " << centre << endl;
+			int id = pMarker->id;
+			cout << "id " << id << " - " << centre << endl;
+			if (id < 0) {
+				cout << " invalid ID " << endl << endl;
+				continue;
+			} 
+			else if (pMarker->cutoffPhase != AR_MARKER_INFO_CUTOFF_PHASE_NONE) {
+				cout << " cutoff " << pMarker->cutoffPhase << endl << endl;
+				continue;
+			}
+			
+			if (find_if(pattTransforms.begin(), pattTransforms.end(), 
+						[&id](const pair<int, Mat>& e) { return e.first == id; }) 
+				!= pattTransforms.end()) {
+				cout << " duplicate ID!" << endl;
+			}
 
 			ARdouble conv[3][4];
-			arGetTransMatSquare(g_pAR3DHandle, pMarker, 75, conv);
+			arGetTransMatSquare(g_pAR3DHandle, pMarker, 40, conv);
 
 			Mat pattTransform = Mat(4, 4, CV_64F, 0.0);
 			for (int p = 0; p < 3; p++) {
@@ -82,7 +98,7 @@ int main(int argc, char* argv[])
 				}
 			}
 			pattTransform.at<double>(3, 3) = 1.0;
-			pattTransforms.push_back(pattTransform);
+			pattTransforms.push_back(pair<int, Mat>(id, pattTransform));
 
 			cout << pattTransform << endl;
 
@@ -101,6 +117,11 @@ int main(int argc, char* argv[])
 				CV_FONT_HERSHEY_DUPLEX, 1, Scalar(0, 0, 255), 2);
 
 			cout << endl;
+		}
+
+		for (auto& kv: pattTransforms) {
+			cout << "id " << kv.first << endl;
+			cout << pattTransforms[0].second.inv() * kv.second << endl;
 		}
 
 		imshow("Image", cvImage);
