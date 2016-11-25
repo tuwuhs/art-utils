@@ -22,12 +22,16 @@ int main(int argc, char* argv[])
 	}
 
 	ostringstream os;
-	os << "-device=Image -noloop -image=" << argv[1];
+	os << "-device=Image -noloop -format=RGB -image=" << argv[1];
 	arVideoOpen(os.str().c_str());
 
 	int xsize, ysize;
 	arVideoGetSize(&xsize, &ysize);
 	AR_PIXEL_FORMAT pixformat = arVideoGetPixelFormat();
+	if (pixformat != AR_PIXEL_FORMAT_RGB) {
+		printf("Pixel format mismatch: %d", pixformat);
+		exit(-1);
+	}
 
 	ARParam cparam;
 	arParamLoad("camera_para.dat", 1, &cparam);
@@ -50,33 +54,14 @@ int main(int argc, char* argv[])
 	arSetMatrixCodeType(g_pARHandle, AR_MATRIX_CODE_TYPE_DEFAULT);
 
 	ARUint8* pImage;
-	Mat cvImage;
+	Mat cvImage = Mat(ysize, xsize, CV_8UC3);
 
 	pImage = arVideoGetImage();
 	if (pImage) {
 		arDetectMarker(g_pARHandle, pImage);
 
-		if (pixformat == AR_PIXEL_FORMAT_RGBA) {
-			cvImage = Mat(ysize, xsize, CV_8UC4);
-			cvImage.data = (uchar*)pImage;
-			cvtColor(cvImage, cvImage, CV_RGBA2BGRA);
-		}
-		else if (pixformat == AR_PIXEL_FORMAT_BGRA) {
-			cvImage = Mat(ysize, xsize, CV_8UC4);
-			cvImage.data = (uchar*)pImage;
-		}
-		else if (pixformat == AR_PIXEL_FORMAT_RGB) {
-			cvImage = Mat(ysize, xsize, CV_8UC3);
-			cvImage.data = (uchar*)pImage;
-			cvtColor(cvImage, cvImage, CV_RGB2BGR);
-		}
-		else if (pixformat == AR_PIXEL_FORMAT_BGR) {
-			cvImage = Mat(ysize, xsize, CV_8UC3);
-			cvImage.data = (uchar*)pImage;
-		}
-		else {
-			// Pixel format not supported!
-		}
+		cvImage.data = (uchar*)pImage;
+		cvtColor(cvImage, cvImage, CV_RGB2BGR);
 
 		imshow("Image", cvImage);
 		waitKey();
