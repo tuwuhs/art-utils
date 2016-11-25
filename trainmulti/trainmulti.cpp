@@ -63,6 +63,26 @@ int main(int argc, char* argv[])
 		cvImage.data = (uchar*)pImage;
 		cvtColor(cvImage, cvImage, CV_RGB2BGR);
 
+		cout << "Detected markers:" << endl;
+		for (int i = 0; i < g_pARHandle->marker_num; i++) {
+			ARMarkerInfo* pMarker = &(g_pARHandle->markerInfo[i]);
+			Point2d centre = Point2d(pMarker->pos[0], pMarker->pos[1]);
+			cout << pMarker->id << " - " << centre << endl;
+
+			for (int j = 0; j < 5; j++) {
+				int dir = pMarker->dir;
+				line(cvImage, 
+					Point2d(pMarker->vertex[(j + 4 - dir) % 4][0], 
+							pMarker->vertex[(j + 4 - dir) % 4][1]),
+					Point2d(pMarker->vertex[(j + 1 + 4 - dir) % 4][0],
+							pMarker->vertex[(j + 1 + 4 - dir) % 4][1]),
+					Scalar(0, 255, 255), 2);
+			}
+
+			putText(cvImage, format("%d", pMarker->id), centre, 
+				CV_FONT_HERSHEY_DUPLEX, 1, Scalar(0, 0, 255), 2);
+		}
+
 		imshow("Image", cvImage);
 		waitKey();
 	}
