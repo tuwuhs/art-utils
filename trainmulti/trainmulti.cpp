@@ -13,6 +13,7 @@ using namespace cv;
 using namespace std;
 
 static ARHandle* g_pARHandle = NULL;
+static AR3DHandle* g_pAR3DHandle = NULL;
 
 int main(int argc, char* argv[])
 {
@@ -45,6 +46,7 @@ int main(int argc, char* argv[])
 	g_pARHandle = arCreateHandle(pCparamLT);
 	arSetPixelFormat(g_pARHandle, pixformat);
 	arSetDebugMode(g_pARHandle, AR_DEBUG_DISABLE);
+	g_pAR3DHandle = ar3DCreateHandle(&cparam);
 	arVideoCapStart();
 
 	// Setup AR
@@ -63,12 +65,28 @@ int main(int argc, char* argv[])
 		cvImage.data = (uchar*)pImage;
 		cvtColor(cvImage, cvImage, CV_RGB2BGR);
 
+		vector<Mat> pattTransforms;
 		cout << "Detected markers:" << endl;
-		for (int i = 0; i < g_pARHandle->marker_num; i++) {
-			ARMarkerInfo* pMarker = &(g_pARHandle->markerInfo[i]);
+		for (int markerIndex = 0; markerIndex < g_pARHandle->marker_num; markerIndex++) {
+			ARMarkerInfo* pMarker = &(g_pARHandle->markerInfo[markerIndex]);
 			Point2d centre = Point2d(pMarker->pos[0], pMarker->pos[1]);
-			cout << pMarker->id << " - " << centre << endl;
+			cout << "id " << pMarker->id << " - " << centre << endl;
 
+			ARdouble conv[3][4];
+			arGetTransMatSquare(g_pAR3DHandle, pMarker, 75, conv);
+
+			Mat pattTransform = Mat(4, 4, CV_64F, 0.0);
+			for (int p = 0; p < 3; p++) {
+				for (int q = 0; q < 4; q++) {
+					pattTransform.at<double>(p, q) = conv[p][q];
+				}
+			}
+			pattTransform.at<double>(3, 3) = 1.0;
+			pattTransforms.push_back(pattTransform);
+
+			cout << pattTransform << endl;
+
+			// Visualize
 			for (int j = 0; j < 5; j++) {
 				int dir = pMarker->dir;
 				line(cvImage, 
@@ -81,6 +99,8 @@ int main(int argc, char* argv[])
 
 			putText(cvImage, format("%d", pMarker->id), centre, 
 				CV_FONT_HERSHEY_DUPLEX, 1, Scalar(0, 0, 255), 2);
+
+			cout << endl;
 		}
 
 		imshow("Image", cvImage);
@@ -89,5 +109,8 @@ int main(int argc, char* argv[])
 
 	// Clean up
 	cvImage.release();
+	arVideoCapStop();
+	ar3DDeleteHandle(&g_pAR3DHandle);
 	arDeleteHandle(g_pARHandle);
+	arParamLTFree(&pCparamLT);
 }
