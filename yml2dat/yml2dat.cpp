@@ -10,6 +10,8 @@
 using namespace cv;
 using namespace std;
 
+#define SAVE_FILENAME ("camera_para.dat")
+
 static void convParam(float intr[3][4], float dist[4], int xsize, int ysize, ARParam *param);
 static ARdouble getSizeFactor(ARdouble dist_factor[], int xsize, int ysize, int dist_function_version);
 
@@ -50,6 +52,14 @@ int main(int argc, char* argv[])
 	ARParam param;
 	convParam(intr, dist, xsize, ysize, &param);
 	arParamDisp(&param);
+
+	if (arParamSave(SAVE_FILENAME, 1, &param) < 0) {
+		cout << "arParamSave() error!" << endl;
+		exit(-1);
+	}
+	else {
+		cout << "Parameters saved to " << SAVE_FILENAME << endl;
+	}
 
 	return 0;
 }
