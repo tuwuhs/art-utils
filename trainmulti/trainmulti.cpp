@@ -17,9 +17,16 @@ static AR3DHandle* g_pAR3DHandle = NULL;
 
 int main(int argc, char* argv[])
 {
-	if (argc != 2) {
-		printf("Usage: %s <image_file>\r\n", argv[0]);
+	if (argc < 3 || argc > 4) {
+		printf("Usage: %s <image_file> <square_size> [<base_id>]\r\n", argv[0]);
 		exit(0);
+	}
+
+	double squareSize = stod(argv[2]);
+	
+	int baseId = -1;
+	if (argc == 4) {
+		baseId = stoi(argv[3]);
 	}
 
 	ostringstream os;
@@ -89,7 +96,7 @@ int main(int argc, char* argv[])
 			}
 
 			ARdouble conv[3][4];
-			arGetTransMatSquare(g_pAR3DHandle, pMarker, 40, conv);
+			arGetTransMatSquare(g_pAR3DHandle, pMarker, squareSize, conv);
 
 			Mat pattTransform = Mat(4, 4, CV_64F, 0.0);
 			for (int p = 0; p < 3; p++) {
@@ -119,9 +126,24 @@ int main(int argc, char* argv[])
 			cout << endl;
 		}
 
-		for (auto& kv: pattTransforms) {
-			cout << "id " << kv.first << endl;
-			cout << pattTransforms[0].second.inv() * kv.second << endl;
+		unsigned int baseIdCount = count_if(pattTransforms.begin(), pattTransforms.end(),
+			[&baseId](pair<int, Mat>& e) { return e.first == baseId; });
+		if (baseIdCount == 0) {
+			cout << "baseId not found." << endl;
+		}
+		else if (baseIdCount > 1) {
+			cout << "Duplicate baseId." << endl;
+		}
+		else {
+			vector< pair<int, Mat> >::iterator it = find_if(
+				pattTransforms.begin(), pattTransforms.end(),
+				[&baseId](pair<int, Mat>& e) { return e.first == baseId; });
+			Mat& baseTransform = it->second;
+			Mat baseTransformInv = baseTransform.inv();
+			for (auto& kv : pattTransforms) {
+				cout << "id " << kv.first << endl;
+				cout << baseTransformInv * kv.second << endl << endl;
+			}
 		}
 
 		imshow("Image", cvImage);
