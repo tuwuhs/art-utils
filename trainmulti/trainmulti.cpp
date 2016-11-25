@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
 			cout << endl;
 		}
 
-		unsigned int baseIdCount = count_if(pattTransforms.begin(), pattTransforms.end(),
+		auto baseIdCount = count_if(pattTransforms.begin(), pattTransforms.end(),
 			[&baseId](pair<int, Mat>& e) { return e.first == baseId; });
 		if (baseIdCount == 0) {
 			cout << "baseId not found." << endl;
@@ -135,14 +135,22 @@ int main(int argc, char* argv[])
 			cout << "Duplicate baseId." << endl;
 		}
 		else {
-			vector< pair<int, Mat> >::iterator it = find_if(
-				pattTransforms.begin(), pattTransforms.end(),
+			auto it = find_if(pattTransforms.begin(), pattTransforms.end(),
 				[&baseId](pair<int, Mat>& e) { return e.first == baseId; });
 			Mat& baseTransform = it->second;
 			Mat baseTransformInv = baseTransform.inv();
+			cout << pattTransforms.size() << endl << endl;
 			for (auto& kv : pattTransforms) {
-				cout << "id " << kv.first << endl;
-				cout << baseTransformInv * kv.second << endl << endl;
+				cout << kv.first << endl;
+				cout << squareSize << endl;
+				Mat T = baseTransformInv * kv.second;
+				for (int p = 0; p < 3; p++) {
+					for (int q = 0; q < 4; q++) {
+						cout << T.at<double>(p, q) << "\t";
+					}
+					cout << endl;
+				}
+				cout << endl;
 			}
 		}
 
