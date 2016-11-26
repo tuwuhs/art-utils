@@ -110,8 +110,13 @@ int main(int argc, char* argv[])
 			cout << pattTransform << endl;
 
 			// Visualize
+			int dir = pMarker->dir;
+			line(cvImage,
+				Point2d(pMarker->pos[0], pMarker->pos[1]),
+				Point2d(pMarker->vertex[(4 - dir) % 4][0],
+						pMarker->vertex[(4 - dir) % 4][1]),
+				Scalar(0, 255, 255), 2);
 			for (int j = 0; j < 5; j++) {
-				int dir = pMarker->dir;
 				line(cvImage, 
 					Point2d(pMarker->vertex[(j + 4 - dir) % 4][0], 
 							pMarker->vertex[(j + 4 - dir) % 4][1]),
@@ -119,7 +124,6 @@ int main(int argc, char* argv[])
 							pMarker->vertex[(j + 1 + 4 - dir) % 4][1]),
 					Scalar(0, 255, 255), 2);
 			}
-
 			putText(cvImage, format("%d", pMarker->id), centre, 
 				CV_FONT_HERSHEY_DUPLEX, 1, Scalar(0, 0, 255), 2);
 
