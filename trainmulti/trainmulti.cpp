@@ -139,19 +139,23 @@ int main(int argc, char* argv[])
 				[&baseId](pair<int, Mat>& e) { return e.first == baseId; });
 			Mat& baseTransform = it->second;
 			Mat baseTransformInv = baseTransform.inv();
-			cout << pattTransforms.size() << endl << endl;
+
+			ofstream of;
+			of.open("multi.dat");
+			of << pattTransforms.size() << endl << endl;
 			for (auto& kv : pattTransforms) {
-				cout << kv.first << endl;
-				cout << squareSize << endl;
+				of << kv.first << endl;
+				of << squareSize << endl;
 				Mat T = baseTransformInv * kv.second;
 				for (int p = 0; p < 3; p++) {
 					for (int q = 0; q < 4; q++) {
-						cout << T.at<double>(p, q) << "\t";
+						of << T.at<double>(p, q) << "\t";
 					}
-					cout << endl;
+					of << endl;
 				}
-				cout << endl;
+				of << endl;
 			}
+			of.close();
 		}
 
 		imshow("Image", cvImage);
