@@ -86,13 +86,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)/include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENCV_DIR)/../../include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opencv_ccalib310.lib;opencv_calib3d310.lib;opencv_core310.lib;opencv_highgui310.lib;opencv_imgproc310.lib;AR.lib;ARvideo.lib;ARICP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)/x64/vc11/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENCV_DIR)/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -102,13 +102,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)/include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENCV_DIR)/../../include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opencv_ccalib310.lib;opencv_calib3d310.lib;opencv_core310.lib;opencv_highgui310.lib;opencv_imgproc310.lib;AR.lib;ARvideo.lib;ARICP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)/x64/vc11/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENCV_DIR)/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,7 +120,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)/include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENCV_DIR)/../../include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,7 +128,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opencv_ccalib310.lib;opencv_calib3d310.lib;opencv_core310.lib;opencv_highgui310.lib;opencv_imgproc310.lib;AR.lib;ARvideo.lib;ARICP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)/x64/vc11/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENCV_DIR)/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,7 +140,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)/include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENCV_DIR)/../../include;$(ARTOOLKIT5_ROOT)/include;$(ARTOOLKIT5_ROOT)/include/win64-x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,7 +148,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opencv_ccalib310.lib;opencv_calib3d310.lib;opencv_core310.lib;opencv_highgui310.lib;opencv_imgproc310.lib;AR.lib;ARvideo.lib;ARICP.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)/x64/vc11/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENCV_DIR)/lib;$(ARTOOLKIT5_ROOT)/lib/win64-x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
