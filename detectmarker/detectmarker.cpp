@@ -5,6 +5,10 @@
 #include <opencv2/opencv.hpp>
 #include <AR/ar.h>
 #include <AR/video.h>
+
+#include <direct.h>
+#include <io.h>
+
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -22,13 +26,13 @@ struct Marker
 	Mat tvec;
 };
 
-bool detectMarkerFromFile(char* filename, ARParam& cparam, double squareSize, vector<Marker>& markers)
+bool detectMarkerFromFile(string filename, ARParam& cparam, double squareSize, vector<Marker>& markers)
 {
 	ARHandle* pARHandle = NULL;
 	AR3DHandle* pAR3DHandle = NULL;
 
 	ostringstream os;
-	os << "-device=Image -noloop -format=RGB -image=" << filename;
+	os << "-device=Image -noloop -format=RGB -image=\"" << filename << "\"";
 	arVideoOpen(os.str().c_str());
 
 	int xsize, ysize;
@@ -134,10 +138,32 @@ bool detectMarkerFromFile(char* filename, ARParam& cparam, double squareSize, ve
 	return true;
 }
 
+bool glob(char* path, char* patt, vector<string>& filenames)
+{
+	_chdir(path);
+
+	char pwd[256];
+	_getcwd(pwd, sizeof(pwd));
+
+	_finddata_t filedata;
+	intptr_t file = _findfirst("*.jpg", &filedata);
+	if (file == -1) {
+		return false;
+	}
+
+	do {
+		ostringstream os;
+		os << pwd << "\\" << filedata.name;
+		filenames.push_back(os.str());
+	} while (_findnext(file, &filedata) == 0);
+
+	return true;
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc < 3 || argc > 4) {
-		printf("Usage: %s <image_file> <square_size> [<base_id>]\r\n", argv[0]);
+		printf("Usage: %s <image_dir> <square_size> [<base_id>]\r\n", argv[0]);
 		exit(0);
 	}
 
@@ -151,11 +177,13 @@ int main(int argc, char* argv[])
 	ARParam cparam;
 	arParamLoad("camera_para.dat", 1, &cparam);
 
-	vector<Marker> markers;
-	detectMarkerFromFile(argv[1], cparam, squareSize, markers);
-	detectMarkerFromFile(argv[1], cparam, squareSize, markers);
+	vector<string> filenames;
+	glob(argv[1], "*.jpg", filenames);
 
-	cout << markers.size() << endl;
+	for (auto f : filenames) {
+		vector<Marker> markers;
+		detectMarkerFromFile(f, cparam, squareSize, markers);
+	}
 
 	return 0;
 }
