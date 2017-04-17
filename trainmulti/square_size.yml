@@ -1,0 +1,7 @@
+%YAML 1.0
+---
+square_size_def:
+   - id: 3
+     square_size: 10000
+   - id: 7
+     square_size: 7500
