@@ -140,14 +140,18 @@ bool detectMarkerFromFile(string filename, ARParam& cparam, double squareSize, v
 
 bool glob(char* path, char* patt, vector<string>& filenames)
 {
+	char pwdOld[256] = "";
+	_getcwd(pwdOld, sizeof(pwdOld));
+
 	_chdir(path);
 
-	char pwd[256];
+	char pwd[256] = "";
 	_getcwd(pwd, sizeof(pwd));
 
 	_finddata_t filedata;
 	intptr_t file = _findfirst("*.jpg", &filedata);
 	if (file == -1) {
+		_chdir(pwdOld); 
 		return false;
 	}
 
@@ -157,6 +161,7 @@ bool glob(char* path, char* patt, vector<string>& filenames)
 		filenames.push_back(os.str());
 	} while (_findnext(file, &filedata) == 0);
 
+	_chdir(pwdOld);
 	return true;
 }
 
@@ -180,10 +185,37 @@ int main(int argc, char* argv[])
 	vector<string> filenames;
 	glob(argv[1], "*.jpg", filenames);
 
+	vector<vector<Marker>> markersList;
 	for (auto f : filenames) {
 		vector<Marker> markers;
 		detectMarkerFromFile(f, cparam, squareSize, markers);
+		markersList.push_back(markers);
 	}
+
+	FileStorage fs("yeah.xml", FileStorage::WRITE);
+	fs << "markers_list" << "[:";
+	auto itm = markersList.cbegin();
+	auto itf = filenames.cbegin();
+	for (; itm != markersList.end() && itf != filenames.end(); itm++, itf++) {
+		fs << "{:";
+		fs << "filename" << *itf;
+		fs << "markers" << "[:";
+		for (auto m : *itm) {
+		//	fs << "{:";
+			fs << m.id;
+		//	fs << "rvec" << m.rvec;
+		//	fs << "tvec" << m.tvec;
+		//	fs << "corners" << "[";
+		//	for (auto c : m.vertices) {
+		//		fs << c;
+		//	}
+		//	fs << "]";
+		//	fs << "}";
+		}
+		fs << "]";
+		fs << "}";
+	}
+	fs << "]";
 
 	return 0;
 }
