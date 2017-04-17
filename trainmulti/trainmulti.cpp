@@ -15,6 +15,15 @@ using namespace std;
 static ARHandle* g_pARHandle = NULL;
 static AR3DHandle* g_pAR3DHandle = NULL;
 
+void GetDesktopResolution(int& w, int& h)
+{
+	RECT desktopRect;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktopRect);
+	w = desktopRect.right;
+	h = desktopRect.bottom;
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc < 3 || argc > 4) {
@@ -160,6 +169,20 @@ int main(int argc, char* argv[])
 				of << endl;
 			}
 			of.close();
+		}
+
+		imwrite("output.jpg", cvImage);
+
+		int screenWidth = 0;
+		int screenHeight = 0;
+		int imageWidth = cvImage.size().width;
+		int imageHeight = cvImage.size().height;
+		GetDesktopResolution(screenWidth, screenHeight);
+		if (imageWidth > screenWidth || imageHeight > screenHeight) {
+			// Do resize
+			double ratio = MIN(1. * screenWidth / imageWidth, 
+				1. * screenHeight / imageHeight) * 0.9;
+			resize(cvImage, cvImage, Size(), ratio, ratio);
 		}
 
 		imshow("Image", cvImage);
